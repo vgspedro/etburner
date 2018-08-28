@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+       <link type="text/css" rel="stylesheet" href="css/w3.css">
+    <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css">
+</head>
+
+<title>EBurner</title>
+<body class="w3-light-grey bgimg-1">
+
+    <div class="login w3-hide">
+        <div class="w3-container">
+            <p class="w3-center">
+                <img src="img/com_logo.png" class="w3-image" style="width: 100px"><br>
+                 <img src="img/text_logo.png" class="w3-image" style="width: 55%">
+            </p>
+            <p class="w3-center w3-large"><i class='fa fa-free-code-camp'></i> EBurner</p>
+            <form id="login">
+                <p>
+                    <input class="w3-opacity-min w3-input w3-padding-16 w3-border w3-xlarge" type="text" placeholder="Email *" name="email">
+                    <div class="w3-text-red w3-hide email required w3-animate-left w3-medium">Obrigatório *</div>
+                </p>
+                <p>
+                    <input class="w3-opacity-min w3-input w3-padding-16 w3-border w3-xlarge" type="password" placeholder="Password *" name="password">
+                    <div class="w3-text-red w3-hide w3-medium w3-animate-left required password">Obrigatório *</div>
+                </p>
+                <div class="w3-row w3-padding-16 w3-xlarge">
+                    <span class="w3-block w3-col s6 w3-button w3-border w3-white w3-padding-large" onclick="navigator.app.exitApp()">
+                        <i class="fa fa-times"></i>
+                    </span>    
+                    <button class="w3-block w3-col s6 w3-button w3-border w3-green w3-padding-large" type="submit">
+                        <i class="fa fa-check"></i>
+                    </button>
+                </div>
+            </form>
+            <div class="w3-small w3-block w3-padding-32" style="position:fixed">
+                <a class="w3-text-white" onclick="window.open('http://www.intouchbiz.com', '_system')">Powered by intouchbiz</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="unlock w3-hide w3-container w3-section w3-xlarge">
+        <div class="w3-row">
+            <button onclick="$('#modal').show()" class="w3-block w3-col s6 w3-border w3-button w3-amber w3-padding-large">
+                <i class="fa fa-eraser"></i>
+            </button>
+            <button onclick="logout()" class="w3-block w3-col s6 w3-border w3-button w3-sand w3-padding-large">
+                <i class="fa fa-sign-out"></i>
+            </button>
+        </div>
+        <div id="home" class="w3-section">
+            <h2 class="w3-center w3-text-white"><i class='fa fa-free-code-camp'></i> EBurner</h2>
+            <div class="w3-row">
+                <button onclick="scan()" class="w3-block w3-col s12 w3-border w3-button w3-indigo w3-padding-large">
+                    <i class="fa fa-barcode"></i>
+                </button>
+            </div>
+        </div>
+        <div id="display" class="w3-border-bottom w3-hide">
+            <table class="w3-table w3-striped w3-white w3-xlarge w3-card-2">
+                <thead class="w3-sand">
+                    <tr>
+                        <th>Total</th>
+                        <th>Bilhete Nº</th>
+                    </tr>
+                </thead>
+                <tbody id="table-results">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<!-- CONFIRM DELETE TABLE WIDTH CURRENT TICKET IN APP ONLY NO DB-->
+<div id="modal" class="w3-modal">
+  <div class="w3-modal-content w3-white w3-card-4" style="max-width:600px">
+    <div class="w3-blue w3-padding w3-border-bottom">
+        <span onclick="$('#modal').hide()" class="w3-button w3-display-topright w3-xlarge"><i class="fa fa-times"></i></span>
+        <h2><i class="fa fa-warning"></i> Confirmar</h2>
+    </div>
+      <div class="w3-padding-small w3-border-bottom">
+        <div class="w3-row">
+            <p class="w3-large">Apagar os registos dos tickets da tabela?</p>
+        </div>
+      </div>
+
+      <div class="w3-row w3-xlarge">
+        <div class="w3-col s6">
+            <button onclick="$('#modal').hide()" type="button" class="w3-button w3-border w3-padding-large w3-block w3-white">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="w3-col s6">
+            <button onclick="$('#modal').hide();setLocalStorageArray()" type="button" class="w3-border w3-button w3-padding-large w3-block w3-green">
+                <i class="fa fa-check"></i>
+            </button>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+<!-- WIFI ERROR-->
+<div id="modal-internet" class="w3-modal">
+  <div class="w3-modal-content w3-white w3-card-4" style="max-width:600px">
+    <div class="w3-red w3-padding w3-border-bottom">
+        <span onclick="$('#modal-internet').hide()" class="w3-button w3-display-topright w3-xlarge"><i class="fa fa-times"></i></span>
+        <h2><i class="fa fa-info-circle"></i> Acesso WI-FI</h2>
+    </div>
+      <div class="w3-padding-small w3-border-bottom">
+        <div class="w3-row">
+            <p class="w3-large">Ligação à internet (WI-FI) verifique<br><span class="w3-right">...e tente novamente!</span></p>
+        </div>
+      </div>
+
+      <div class="w3-row w3-xlarge">
+      <div class="w3-col s6">&nbsp;</div>
+        <div class="w3-col s6">
+            <button onclick="$('#modal-internet').hide()" type="button" class="w3-button w3-border w3-padding-large w3-block">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<!--CREDENCIALS ERROR-->
+<div id="modal-credentials" class="w3-modal">
+  <div class="w3-modal-content w3-white w3-card-4" style="max-width:600px">
+    <div class="w3-amber w3-padding w3-border-bottom">
+        <span onclick="$('#modal-credentials').hide()" class="w3-button w3-display-topright w3-xlarge"><i class="fa fa-times"></i></span>
+        <h2><i class="fa fa-info-circle"></i> Verifique</h2>
+    </div>
+      <div class="w3-padding-small w3-border-bottom">
+        <div class="w3-row">
+            <p class="w3-large">Email ou Password inválidos, altere <br><span class="w3-right">...e tente novamente!</span></p>
+        </div>
+      </div>
+
+      <div class="w3-row w3-xlarge">
+      <div class="w3-col s6">&nbsp;</div>
+        <div class="w3-col s6">
+            <button onclick="$('#modal-credentials').hide()" type="button" class="w3-button w3-border w3-padding-large w3-block">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<!--TICKET STATUS ERROR-->
+<div id="modal-status" class="w3-modal">
+  <div class="w3-modal-content w3-white w3-card-4" style="max-width:600px">
+    <div class="w3-red w3-padding w3-border-bottom">
+        <span onclick="$('#modal-status').hide()" class="w3-button w3-display-topright w3-xlarge"><i class="fa fa-times"></i></span>
+        <h2><i class="fa fa-info-circle"></i> Estado Ticket</h2>
+    </div>
+      <div class="w3-padding-small w3-border-bottom">
+        <div class="w3-row">
+            <p class="w3-xxlarge ticket-status w3-center"></p>
+        </div>
+      </div>
+
+      <div class="w3-row w3-xlarge">
+      <div class="w3-col s6">&nbsp;</div>
+        <div class="w3-col s6">
+            <button onclick="$('#modal-status').hide()" type="button" class="w3-button w3-border w3-block w3-padding-large">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<!-- SCAN ERROR-->
+<div id="modal-scan-error" class="w3-modal">
+  <div class="w3-modal-content w3-white w3-card-4" style="max-width:600px">
+    <div class="w3-amber w3-padding w3-border-bottom">
+        <span onclick="$('#modal-scan-error').hide()" class="w3-button w3-display-topright w3-xlarge"><i class="fa fa-times"></i></span>
+        <h2><i class="fa fa-barcode"></i> Leitor QR</h2>
+    </div>
+      <div class="w3-padding-small w3-border-bottom">
+        <div class="w3-row">
+            <p class="w3-large">Não foi possivel lêr o codigo QR!<br>
+            <span class="modal-scan-error-txt"></span><br>
+            <span class="w3-right">...e tente novamente!</span></p>
+        </div>
+      </div>
+      <div class="w3-row w3-xlarge w3-padding-16">
+      <div class="w3-col s6">&nbsp;</div>
+        <div class="w3-col s6">
+            <button onclick="$('#modal-scan-error').hide()" type="button" class="w3-button w3-block w3-padding-large w3-border">
+                <i onclick="$('#modal-scan-error').hide()" class="fa fa-times"></i>
+            </button>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div class="w3-overlay">
+    <span style="position: fixed;top: calc(50% - 94px);left: calc(50% - 123px)" class="w3-xxxlarge">
+        <i class="w3-text-light-blue fa fa-spinner fa-4x fa-spin fa-fw"></i>
+    </span>
+</div>
+
+<!--button onclick="burnTicket('151')">BURN</button-->
+
+<audio id="nowifi">
+  <source src="nowifi.mp3" type="audio/mpeg">
+</audio>
+<audio id="invalid">
+  <source src="invalid.mp3" type="audio/mpeg">
+</audio>
+<audio id="success">
+  <source src="success.mp3" type="audio/mpeg">
+</audio>
+
+<input type="hidden" id="datevalidate" value="0">
+
+<!--button onclick="burnTicket('ZwR5')"> QUEIMA</button-->
+
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+
+        path = 'http://demo.experienceware.pt/' 
+        //path ='http://10.0.9.20:3032/'
+        /* DEBUG ONLY */
+        //localStorage.setItem ("acess",1)
+
+        app.initialize()
+
+        localStorage.getItem("ticket") == null ? setLocalStorageArray() : false
+
+        if (localStorage.getItem("acess") == null || localStorage.getItem("acess") == ''){
+            $('.unlock').addClass('w3-hide')
+            $('.login').removeClass('w3-hide')
+        }
+        else{
+            $('.unlock').removeClass('w3-hide')
+            $('.login').addClass('w3-hide')
+            $('#display').addClass('w3-hide')
+           setTimeout(function(){
+                showTickets()
+            }, 500)
+        }
+
+        $('#login').on('submit',function(e){
+            e.preventDefault()
+            $('.w3-overlay').show()
+            $('.required').addClass('w3-hide').removeClass('w3-animate-zoom')
+            setTimeout(function(){
+                $.ajax({ 
+                    url:path+'api/operator/key',
+                    data:$('#login').serialize(),
+                    type:'POST',
+                    cors:true,
+                    
+                    success:function(dl){
+                        $('.w3-overlay').hide()
+                        if (dl.message == 'success'){
+                            /*DATA.DATA IS IN HEX*/
+                            localStorage.setItem("acess", dl.id)
+                            localStorage.setItem("name", dl.name)
+                            $('.unlock').removeClass('w3-hide')
+                            $('.login').addClass('w3-hide')
+                            setTimeout(function(){
+                                showTickets()
+                            }, 500)
+                        }
+                        else if(dl.message == 'validate'){
+                            $('#modal-credentials').show()
+                        }
+                        else if(dl.message =='fail') {
+                            for(i=0;i<dl.data.length;i++)
+                               $('.'+dl.data[i]).removeClass('w3-hide').addClass('w3-animate-zoom')
+                        }
+                    },
+                    error:function(){
+                        noWifi()
+                    }
+                })
+            }, 750)
+        })
+    </script>
+</body>
+</html>
