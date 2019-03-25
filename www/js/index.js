@@ -158,6 +158,9 @@ function showTickets(){
         $('#display').addClass('w3-hide')
 }
 
+
+
+
 var app = {
     // Application Constructor
     initialize: function() {
